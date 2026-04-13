@@ -1,0 +1,451 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Pearl | Freedom Ecotours</title>
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,300&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet" />
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --deep: #071820;
+      --mid: #0d2d3d;
+      --teal: #1a7a6e;
+      --teal-light: #2aab99;
+      --pearl: #f0f7f6;
+      --text: #e2f0ee;
+      --muted: #7aada6;
+      --user-bubble: #1a7a6e;
+      --bot-bubble: rgba(255,255,255,0.07);
+    }
+
+    html, body {
+      height: 100%;
+      font-family: 'DM Sans', sans-serif;
+      background: var(--deep);
+      color: var(--text);
+      overflow: hidden;
+    }
+
+    body {
+      display: flex;
+      flex-direction: column;
+      height: 100dvh;
+      background:
+        radial-gradient(ellipse at 15% 40%, rgba(26,122,110,0.12) 0%, transparent 55%),
+        radial-gradient(ellipse at 85% 15%, rgba(13,45,61,0.9) 0%, transparent 50%),
+        var(--deep);
+    }
+
+    /* HEADER */
+    .header {
+      flex-shrink: 0;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      padding: 14px 18px;
+      background: rgba(7,24,32,0.85);
+      backdrop-filter: blur(16px);
+      border-bottom: 1px solid rgba(42,171,153,0.12);
+      z-index: 10;
+    }
+
+    .avatar {
+      width: 42px;
+      height: 42px;
+      border-radius: 50%;
+      background: linear-gradient(135deg, var(--teal), var(--teal-light));
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 20px;
+      flex-shrink: 0;
+      box-shadow: 0 0 18px rgba(42,171,153,0.35);
+    }
+
+    .header-info { flex: 1; min-width: 0; }
+
+    .header-name {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 19px;
+      font-weight: 600;
+      color: var(--pearl);
+      line-height: 1.2;
+    }
+
+    .header-sub {
+      font-size: 10.5px;
+      color: var(--teal-light);
+      letter-spacing: 0.09em;
+      text-transform: uppercase;
+    }
+
+    .online {
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      background: #4ade80;
+      box-shadow: 0 0 7px #4ade80;
+      animation: blink 2s infinite;
+      flex-shrink: 0;
+    }
+
+    @keyframes blink {
+      0%, 100% { opacity: 1; }
+      50% { opacity: 0.3; }
+    }
+
+    /* CHIPS */
+    .chips {
+      flex-shrink: 0;
+      display: flex;
+      gap: 7px;
+      padding: 9px 14px;
+      overflow-x: auto;
+      scrollbar-width: none;
+      background: rgba(7,24,32,0.6);
+      border-bottom: 1px solid rgba(42,171,153,0.07);
+    }
+    .chips::-webkit-scrollbar { display: none; }
+
+    .chip {
+      flex-shrink: 0;
+      padding: 5px 12px;
+      border-radius: 20px;
+      border: 1px solid rgba(42,171,153,0.3);
+      background: rgba(42,171,153,0.07);
+      color: var(--teal-light);
+      font-family: 'DM Sans', sans-serif;
+      font-size: 12px;
+      cursor: pointer;
+      transition: all 0.18s;
+      white-space: nowrap;
+    }
+
+    .chip:hover, .chip:active {
+      background: rgba(42,171,153,0.18);
+      border-color: var(--teal-light);
+      color: var(--pearl);
+    }
+
+    /* CHAT */
+    .chat {
+      flex: 1;
+      overflow-y: auto;
+      padding: 18px 14px;
+      display: flex;
+      flex-direction: column;
+      gap: 14px;
+      scrollbar-width: thin;
+      scrollbar-color: rgba(42,171,153,0.15) transparent;
+    }
+
+    .msg {
+      display: flex;
+      gap: 9px;
+      max-width: 86%;
+      animation: fadeUp 0.25s ease-out;
+    }
+
+    @keyframes fadeUp {
+      from { opacity: 0; transform: translateY(6px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    .msg.bot { align-self: flex-start; }
+    .msg.user { align-self: flex-end; flex-direction: row-reverse; }
+
+    .msg-avatar {
+      width: 30px;
+      height: 30px;
+      border-radius: 50%;
+      background: linear-gradient(135deg, var(--teal), var(--teal-light));
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 14px;
+      flex-shrink: 0;
+      margin-top: 2px;
+    }
+
+    .bubble {
+      padding: 10px 14px;
+      border-radius: 16px;
+      font-size: 14px;
+      line-height: 1.55;
+    }
+
+    .msg.bot .bubble {
+      background: var(--bot-bubble);
+      border: 1px solid rgba(42,171,153,0.13);
+      border-radius: 3px 16px 16px 16px;
+      color: var(--text);
+    }
+
+    .msg.user .bubble {
+      background: var(--user-bubble);
+      color: #fff;
+      border-radius: 16px 3px 16px 16px;
+    }
+
+    /* TYPING */
+    .typing-dots {
+      display: flex;
+      gap: 4px;
+      align-items: center;
+      padding: 12px 14px;
+    }
+
+    .typing-dots span {
+      width: 6px;
+      height: 6px;
+      border-radius: 50%;
+      background: var(--teal-light);
+      animation: dot 1.2s infinite;
+    }
+
+    .typing-dots span:nth-child(2) { animation-delay: 0.2s; }
+    .typing-dots span:nth-child(3) { animation-delay: 0.4s; }
+
+    @keyframes dot {
+      0%, 60%, 100% { transform: translateY(0); opacity: 0.4; }
+      30% { transform: translateY(-5px); opacity: 1; }
+    }
+
+    /* INPUT */
+    .input-area {
+      flex-shrink: 0;
+      padding: 10px 14px 14px;
+      background: rgba(7,24,32,0.92);
+      border-top: 1px solid rgba(42,171,153,0.12);
+    }
+
+    .input-row {
+      display: flex;
+      align-items: flex-end;
+      gap: 9px;
+      background: rgba(255,255,255,0.05);
+      border: 1px solid rgba(42,171,153,0.2);
+      border-radius: 22px;
+      padding: 9px 9px 9px 15px;
+      transition: border-color 0.2s;
+    }
+
+    .input-row:focus-within {
+      border-color: rgba(42,171,153,0.5);
+    }
+
+    textarea {
+      flex: 1;
+      background: transparent;
+      border: none;
+      outline: none;
+      color: var(--text);
+      font-family: 'DM Sans', sans-serif;
+      font-size: 14px;
+      resize: none;
+      max-height: 90px;
+      line-height: 1.5;
+    }
+
+    textarea::placeholder { color: var(--muted); }
+
+    .send-btn {
+      width: 34px;
+      height: 34px;
+      border-radius: 50%;
+      background: linear-gradient(135deg, var(--teal), var(--teal-light));
+      border: none;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+      color: white;
+      transition: transform 0.15s, opacity 0.15s;
+    }
+
+    .send-btn:hover { transform: scale(1.08); }
+    .send-btn:active { transform: scale(0.94); }
+    .send-btn:disabled { opacity: 0.4; cursor: not-allowed; transform: none; }
+
+    .send-btn svg { width: 15px; height: 15px; }
+
+    .footer-note {
+      text-align: center;
+      font-size: 10px;
+      color: var(--muted);
+      margin-top: 7px;
+      opacity: 0.7;
+    }
+  </style>
+</head>
+<body>
+
+  <div class="header">
+    <div class="avatar">🐋</div>
+    <div class="header-info">
+      <div class="header-name">Pearl</div>
+      <div class="header-sub">Freedom Ecotours · Hervey Bay</div>
+    </div>
+    <div class="online"></div>
+  </div>
+
+  <div class="chips" id="chips">
+    <button class="chip" onclick="sendChip(this)">🗓 Book a trip</button>
+    <button class="chip" onclick="sendChip(this)">🐳 Whale season</button>
+    <button class="chip" onclick="sendChip(this)">⏱ Trip duration</button>
+    <button class="chip" onclick="sendChip(this)">🌊 Seasickness tips</button>
+    <button class="chip" onclick="sendChip(this)">👨‍👩‍👧 Family friendly?</button>
+    <button class="chip" onclick="sendChip(this)">🌿 Eco mission</button>
+    <button class="chip" onclick="sendChip(this)">📍 How to find us</button>
+  </div>
+
+  <div class="chat" id="chat"></div>
+
+  <div class="input-area">
+    <div class="input-row">
+      <textarea id="input" rows="1" placeholder="Ask Pearl anything about whale watching…" onkeydown="handleKey(event)" oninput="autoResize(this)"></textarea>
+      <button class="send-btn" id="sendBtn" onclick="send()">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+          <line x1="22" y1="2" x2="11" y2="13"></line>
+          <polygon points="22 2 15 22 11 13 2 9 22 2"></polygon>
+        </svg>
+      </button>
+    </div>
+    <div class="footer-note">Pearl · Powered by ChatLocal AI · Freedom Ecotours Pty Ltd</div>
+  </div>
+
+  <script>
+    const GROQ_API_URL = 'https://corsproxy.io/?https://api.groq.com/openai/v1/chat/completions';
+    const GROQ_API_KEY = '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';
+    const MODEL = 'llama3-70b-8192';
+
+    const SYSTEM_PROMPT = `You are Pearl, a warm and knowledgeable chatbot for Freedom Ecotours in Hervey Bay, Queensland, Australia.
+
+Freedom Ecotours is a passionate, owner-operated whale watching company run by Mark and skipper Toni. Key facts:
+- Perfect 5.0 star Google rating with 551+ reviews
+- Small intimate boat — lower to the water means closer to the whales
+- Deep commitment to marine conservation and whale welfare
+- Exceptional food and hospitality on board
+- Expert knowledge of humpback whale behaviour
+- Season: July to November (peak August–October)
+- Departs from Urangan Marina, Hervey Bay QLD
+- Phone: 0448 773 668
+- Website: freedomwhalewatch.com.au
+
+YOUR PERSONALITY:
+- Warm, genuine, passionate about the ocean and conservation
+- Knowledgeable but never preachy
+- Reflect the personal, family-run feel of Freedom Ecotours
+- Short friendly responses — 2-4 sentences unless more detail is needed
+- Use occasional ocean/whale emojis naturally 🐋🌊🐬
+
+ALWAYS end booking-related responses by inviting them to call 0448 773 668 or visit freedomwhalewatch.com.au`;
+
+    let messages = [];
+    let busy = false;
+
+    window.addEventListener('load', () => {
+      setTimeout(() => {
+        addBot("G'day! I'm Pearl 🐋 — your guide to an unforgettable whale watching experience with Freedom Ecotours right here in Hervey Bay.\n\nWhether you want to book a trip, learn about the whales, or find out what to expect on the water — I'm here to help!");
+      }, 500);
+    });
+
+    function addBot(text) {
+      const chat = document.getElementById('chat');
+      const el = document.createElement('div');
+      el.className = 'msg bot';
+      el.innerHTML = `<div class="msg-avatar">🐋</div><div class="bubble">${text.replace(/\n/g, '<br>')}</div>`;
+      chat.appendChild(el);
+      chat.scrollTop = chat.scrollHeight;
+    }
+
+    function addUser(text) {
+      const chat = document.getElementById('chat');
+      const el = document.createElement('div');
+      el.className = 'msg user';
+      el.innerHTML = `<div class="bubble">${text}</div>`;
+      chat.appendChild(el);
+      chat.scrollTop = chat.scrollHeight;
+    }
+
+    function showTyping() {
+      const chat = document.getElementById('chat');
+      const el = document.createElement('div');
+      el.className = 'msg bot';
+      el.id = 'typing';
+      el.innerHTML = `<div class="msg-avatar">🐋</div><div class="bubble"><div class="typing-dots"><span></span><span></span><span></span></div></div>`;
+      chat.appendChild(el);
+      chat.scrollTop = chat.scrollHeight;
+    }
+
+    function hideTyping() {
+      const el = document.getElementById('typing');
+      if (el) el.remove();
+    }
+
+    async function send() {
+      const input = document.getElementById('input');
+      const text = input.value.trim();
+      if (!text || busy) return;
+
+      input.value = '';
+      input.style.height = 'auto';
+      document.getElementById('sendBtn').disabled = true;
+      addUser(text);
+      messages.push({ role: 'user', content: text });
+      busy = true;
+      showTyping();
+
+      try {
+        const res = await fetch(GROQ_API_URL, {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${GROQ_API_KEY}`
+          },
+          body: JSON.stringify({
+            model: MODEL,
+            max_tokens: 1000,
+            messages: [
+              { role: 'system', content: SYSTEM_PROMPT },
+              ...messages
+            ]
+          })
+        });
+
+        const data = await res.json();
+        const reply = data.choices?.[0]?.message?.content || "Sorry, I had a little hiccup! Please try again 🌊";
+        hideTyping();
+        messages.push({ role: 'assistant', content: reply });
+        addBot(reply);
+      } catch (err) {
+        hideTyping();
+        addBot("Oops — looks like a wave hit our signal! Try again in a moment 🌊");
+      }
+
+      busy = false;
+      document.getElementById('sendBtn').disabled = false;
+    }
+
+    function sendChip(chip) {
+      document.getElementById('input').value = chip.textContent.replace(/^[^\w]*/, '').trim();
+      send();
+    }
+
+    function handleKey(e) {
+      if (e.key === 'Enter' && !e.shiftKey) {
+        e.preventDefault();
+        send();
+      }
+    }
+
+    function autoResize(el) {
+      el.style.height = 'auto';
+      el.style.height = Math.min(el.scrollHeight, 90) + 'px';
+    }
+  </script>
+</body>
+</html>
